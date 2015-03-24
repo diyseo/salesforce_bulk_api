@@ -11,18 +11,16 @@ module SalesforceBulkApi::Concerns
     end
 
     def set_status_throttle(limit_seconds)
-      set_throttle_limit_in_seconds(limit_seconds,
-        :throttle_by_keys => %i(http_method path),
-        :only_if => ->(details) { details[:path] == :get })
+      set_throttle_limit_in_seconds(limit_seconds)
     end
 
-    def set_throttle_limit_in_seconds(limit_seconds, :throttle_by_keys => %i(http_method path), :only_if => Proc.new{true})
+    def set_throttle_limit_in_seconds(limit_seconds)
       add_throttle do |details|
         limit_log = get_limit_log(Time.now - limit_seconds)
-        key = extract_constraint_key_from(details, throttle_by_keys)
+        key = extract_constraint_key_from(details, [:http_method, :path])
         last_request = limit_log[key]
 
-        if !last_request.nil? && only_if.call(details)
+        if !last_request.nil? && details[:path] == :get
           seconds_since_last_request = Time.now.to_f - last_request.to_f
           need_to_wait_seconds = limit_seconds - seconds_since_last_request
           sleep(need_to_wait_seconds) if need_to_wait_seconds > 0
