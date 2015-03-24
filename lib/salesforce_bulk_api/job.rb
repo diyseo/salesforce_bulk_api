@@ -5,7 +5,7 @@ module SalesforceBulkApi
 
     class SalesforceException < StandardError; end
 
-    def initialize(:operation => nil, :sobject => nil, :records => nil, :external_field => nil, :connection => nil, :job_id => nil)
+    def initialize(operation = nil, sobject = nil, records = nil, external_field = nil, connection = nil, job_id = nil)
       @job_id         = job_id
       @operation      = operation
       @sobject        = sobject
