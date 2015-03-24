@@ -70,7 +70,7 @@ module SalesforceBulkApi
     def do_operation(operation, sobject, records, external_field, get_response, timeout, batch_size, send_nulls = false, no_null_list = [])
       count operation.to_sym
 
-      job = SalesforceBulkApi::Job.new(:operation => operation, :sobject => sobject, :records => records, :external_field => external_field, :connection => @connection)
+      job = SalesforceBulkApi::Job.new(operation, sobject, records, external_field, @connection)
 
       job.create_job(batch_size, send_nulls, no_null_list)
       @listeners[:job_created].each {|callback| callback.call(job)}
