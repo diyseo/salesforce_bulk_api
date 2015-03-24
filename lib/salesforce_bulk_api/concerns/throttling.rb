@@ -12,11 +12,11 @@ module SalesforceBulkApi::Concerns
 
     def set_status_throttle(limit_seconds)
       set_throttle_limit_in_seconds(limit_seconds,
-        throttle_by_keys: %i(http_method path),
-        only_if: ->(details) { details[:path] == :get })
+        :throttle_by_keys => %i(http_method path),
+        :only_if => ->(details) { details[:path] == :get })
     end
 
-    def set_throttle_limit_in_seconds(limit_seconds, throttle_by_keys: %i(http_method path), only_if: Proc.new{true})
+    def set_throttle_limit_in_seconds(limit_seconds, :throttle_by_keys => %i(http_method path), :only_if => Proc.new{true})
       add_throttle do |details|
         limit_log = get_limit_log(Time.now - limit_seconds)
         key = extract_constraint_key_from(details, throttle_by_keys)

@@ -44,7 +44,7 @@ require 'timeout'
       i = 0
       begin
         count :post
-        throttle(http_method: :post, path: path)
+        throttle(:http_method => :post, :path => path)
         https(host).post(path, xml, headers).body
       rescue
         i += 1
@@ -66,7 +66,7 @@ require 'timeout'
       end
 
       count :get
-      throttle(http_method: :get, path: path)
+      throttle(:http_method => :get, :path => path)
       https(host).get(path, headers).body
     end
 

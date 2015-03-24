@@ -18,7 +18,7 @@ module SalesforceBulkApi
 
     def initialize(client)
       @connection = SalesforceBulkApi::Connection.new(@@SALESFORCE_API_VERSION, client)
-      @listeners = { job_created: [] }
+      @listeners = { :job_created => [] }
     end
 
     def upsert(sobject, records, external_field, get_response = false, send_nulls = false, no_null_list = [], batch_size = 10000, timeout = 1500)
@@ -43,13 +43,13 @@ module SalesforceBulkApi
 
     def counters
       {
-        http_get: @connection.counters[:get],
-        http_post: @connection.counters[:post],
-        upsert: @counters[:upsert],
-        update: @counters[:update],
-        create: @counters[:create],
-        delete: @counters[:delete],
-        query: @counters[:query]
+        :http_get => @connection.counters[:get],
+        :http_post => @connection.counters[:post],
+        :upsert => @counters[:upsert],
+        :update => @counters[:update],
+        :create => @counters[:create],
+        :delete => @counters[:delete],
+        :query => @counters[:query]
       }
     end
 
@@ -64,13 +64,13 @@ module SalesforceBulkApi
     end
 
     def job_from_id(job_id)
-      SalesforceBulkApi::Job.new(job_id: job_id, connection: @connection)
+      SalesforceBulkApi::Job.new(:job_id => job_id, :connection => @connection)
     end
 
     def do_operation(operation, sobject, records, external_field, get_response, timeout, batch_size, send_nulls = false, no_null_list = [])
       count operation.to_sym
 
-      job = SalesforceBulkApi::Job.new(operation: operation, sobject: sobject, records: records, external_field: external_field, connection: @connection)
+      job = SalesforceBulkApi::Job.new(:operation => operation, :sobject => sobject, :records => records, :external_field => external_field, :connection => @connection)
 
       job.create_job(batch_size, send_nulls, no_null_list)
       @listeners[:job_created].each {|callback| callback.call(job)}
